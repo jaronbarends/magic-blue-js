@@ -2,12 +2,11 @@
 
 	'use strict';
 
-	// (optional) tell jshint about globals (they should remain commented out)
-	/* globals someGlobalVar */ //Tell jshint someGlobalVar exists as global var
+	const SERVICE_UUID = 0xffe5;
+	const CONTROL_CHARACTERISTIC_UUID = 0xffe9;
 
-	let bulbDevice;
-	let bulbServer;
-	let bulbChar;
+	let device;
+	let ctrlCharacteristic;
 
 	/**
 	* connect to the bulb
@@ -15,18 +14,14 @@
 	*/
 	const connect = async function() {
 		try {
-			const device = await navigator.bluetooth.requestDevice({
+			device = await navigator.bluetooth.requestDevice({
 				filters: [{
-					services: [0xffe5]
+					services: [SERVICE_UUID]
 				}]
 			});
-			bulbDevice = device;
-			const server = await bulbDevice.gatt.connect();
-			const service = await server.getPrimaryService(0xffe5);
-			const characteristic = await service.getCharacteristic(0xffe9);
-			
-			bulbChar = characteristic;
-			window.b = bulbChar;
+			const server = await device.gatt.connect();
+			const service = await server.getPrimaryService(SERVICE_UUID);
+			ctrlCharacteristic = await service.getCharacteristic(CONTROL_CHARACTERISTIC_UUID);
 			
 			document.getElementById(`btn--connect`).setAttribute('disabled', 'disabled');
 			document.getElementById(`btn--disconnect`).removeAttribute('disabled');
@@ -35,54 +30,15 @@
 		}
 	};
 
-	/**
-	* connect to the bulb
-	* @returns {undefined}
-	*/
-	const connectPromise = function() {
-		navigator.bluetooth.requestDevice({
-			filters: [{
-				services: [0xffe5]
-			}]
-		})
-		.then((device) => {
-			bulbDevice = device;
-			return bulbDevice.gatt.connect();
-		})
-		.then((server) => {
-			console.log('server', server);
-			bulbServer = server;
-			return server.getPrimaryServices(0xffe5);
-		})
-		.then((services) => {
-			console.log('services', services);
-			return false;
-			return service.getCharacteristic(0xffe9);
-		})
-		.then((characteristic) => {
-			bulbChar = characteristic;
-			window.b = bulbChar;
-			
-			document.getElementById(`btn--connect`).setAttribute('disabled', 'disabled');
-			document.getElementById(`btn--disconnect`).removeAttribute('disabled');
-			// return bulbChar.readValue();
-		})
-		.catch((error) => {
-			console.log(`error!:`, error);
-			return false;
-		})
-	};
-
-	// ffe4
-
 
 	/**
 	* disconnect the bulb
 	* @returns {undefined}
 	*/
 	const disconnect = function() {
-		if (bulbDevice.gatt.connected) {
-			bulbDevice.gatt.disconnect();
+		if (device.gatt.connected) {
+			device.gatt.disconnect();
+			ctrlCharacteristic = null;
 			document.getElementById(`btn--disconnect`).setAttribute('disabled', 'disabled');
 			document.getElementById(`btn--connect`).removeAttribute('disabled');
 		}
@@ -96,8 +52,7 @@
 	const initButtons = function() {
 		document.getElementById('btn--connect').addEventListener('click', (e) => {
 			e.preventDefault();
-			const value = connect();
-			// console.log(value);
+			connect();
 		})
 		document.getElementById('btn--disconnect').addEventListener('click', (e) => {
 			e.preventDefault();
@@ -111,8 +66,40 @@
 	*/
 	const getValueById = function(id) {
 		return parseInt(document.getElementById(id).value);
-		// return '0x' + document.getElementById(id).value.toString(16);
 	};
+
+
+	/**
+	* write a value to the bulb
+	* @returns {undefined}
+	*/
+	const writeValue = function(data) {
+		if (device.gatt.connected) {
+			ctrlCharacteristic.writeValue(data);
+		} else {
+			console.warn(`Can't write - device not connected`);
+		}
+	};
+
+
+	/**
+	* switch bulb on
+	* @returns {undefined}
+	*/
+	const switchOn = function() {
+		writeValue(new Uint8Array([0xcc, 0x23, 0x33]));
+	};
+
+
+	/**
+	* switch bulb off
+	* @returns {undefined}
+	*/
+	const switchOff = function() {
+		writeValue(new Uint8Array([0xcc, 0x24, 0x33]));
+	};
+	
+	
 	
 
 
@@ -126,7 +113,7 @@
 		let b = getValueById(`rgb-b`);
 
 		const data = new Uint8Array([0x56, r, g, b, 0xbb, 0xf0, 0xaa]);
-		bulbChar.writeValue(data);
+		writeValue(data);
 	};
 
 
@@ -137,7 +124,7 @@
 	const setWhite = function(e) {
 		const w = getValueById('white');
 		const data = new Uint8Array([0x56, 0x00, 0x00, 0x00, w, 0x0f, 0xaa]);
-		bulbChar.writeValue(data);
+		writeValue(data);
 	};
 
 
@@ -149,7 +136,7 @@
 		const md = getValueById('mode');
 		const speed = getValueById('mode-speed');
 		const data = new Uint8Array([0xbb, md, speed, 0x44]);
-		bulbChar.writeValue(data);
+		writeValue(data);
 	};
 	
 	
@@ -159,6 +146,15 @@
 	* @returns {undefined}
 	*/
 	const initControls = function() {
+		const onOff = document.getElementById(`on-off`);
+		onOff.addEventListener('change', (e) => {
+			const checked = e.target.checked;
+			if (checked) {
+				switchOn();
+			} else {
+				switchOff();
+			}
+		});
 		const rgbSliders = Array.from(document.querySelectorAll('[data-rgb-slider]'));
 		rgbSliders.forEach((slider) => {
 			slider.addEventListener('change', setRGB);
@@ -194,7 +190,6 @@
 			});
 		})
 	};
-	
 	
 	
 
