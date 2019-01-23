@@ -1,4 +1,4 @@
-import {MagicBlue} from './magicblue.js';
+import {MagicBlue} from '../../src/magicblue.js';
 
 let bulb;
 let isConnected = false;

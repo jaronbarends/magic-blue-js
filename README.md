@@ -25,6 +25,11 @@ document.getElementById('my-connect-button').addEventListener('click', (e) => {
 bulb.setRGB(255, 0, 0);
 ```
 
+Web bluetooth only works on https or localhost. A simple Node webserver is included in the repo. Start it by doubleclicking START-WEBSERVER.bat, or type `node webserver.js`. You can then view the files at http://localhost:8000
+
+### Example page
+_http://localhost:8000/demo/index.html_ gives you a page with examples of all functionality.
+
 ## Methods
 
 ### `connect`
