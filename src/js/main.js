@@ -6,13 +6,40 @@
 	/* globals someGlobalVar */ //Tell jshint someGlobalVar exists as global var
 
 	let bulbDevice;
+	let bulbServer;
 	let bulbChar;
 
 	/**
 	* connect to the bulb
 	* @returns {undefined}
 	*/
-	const connect = function() {
+	const connect = async function() {
+		try {
+			const device = await navigator.bluetooth.requestDevice({
+				filters: [{
+					services: [0xffe5]
+				}]
+			});
+			bulbDevice = device;
+			const server = await bulbDevice.gatt.connect();
+			const service = await server.getPrimaryService(0xffe5);
+			const characteristic = await service.getCharacteristic(0xffe9);
+			
+			bulbChar = characteristic;
+			window.b = bulbChar;
+			
+			document.getElementById(`btn--connect`).setAttribute('disabled', 'disabled');
+			document.getElementById(`btn--disconnect`).removeAttribute('disabled');
+		} catch(error) {
+			console.log(error);
+		}
+	};
+
+	/**
+	* connect to the bulb
+	* @returns {undefined}
+	*/
+	const connectPromise = function() {
 		navigator.bluetooth.requestDevice({
 			filters: [{
 				services: [0xffe5]
@@ -23,28 +50,30 @@
 			return bulbDevice.gatt.connect();
 		})
 		.then((server) => {
-			console.log('server');
-			return server.getPrimaryService(0xffe5);
+			console.log('server', server);
+			bulbServer = server;
+			return server.getPrimaryServices(0xffe5);
 		})
-		.then((service) => {
-			console.log('service');
+		.then((services) => {
+			console.log('services', services);
+			return false;
 			return service.getCharacteristic(0xffe9);
 		})
 		.then((characteristic) => {
 			bulbChar = characteristic;
+			window.b = bulbChar;
 			
 			document.getElementById(`btn--connect`).setAttribute('disabled', 'disabled');
 			document.getElementById(`btn--disconnect`).removeAttribute('disabled');
-			// const data = new Uint8Array([0xbb, 0x25, 0x05, 0x44]);
-			// const data = new Uint8Array([0x56, 0x00, 0x00, 0x00, 0xbb, 0x0f, 0xaa]);// white
-			// const data = new Uint8Array([0x56, 0xcc, 0x00, 0xaa, 0x00, 0xf0, 0xaa]);// rgb
-			// return characteristic.writeValue(data);
-			// return bulbChar.writeValue(data);
+			// return bulbChar.readValue();
 		})
 		.catch((error) => {
 			console.log(`error!:`, error);
+			return false;
 		})
 	};
+
+	// ffe4
 
 
 	/**
@@ -67,7 +96,8 @@
 	const initButtons = function() {
 		document.getElementById('btn--connect').addEventListener('click', (e) => {
 			e.preventDefault();
-			connect();
+			const value = connect();
+			// console.log(value);
 		})
 		document.getElementById('btn--disconnect').addEventListener('click', (e) => {
 			e.preventDefault();
@@ -119,8 +149,6 @@
 		const md = getValueById('mode');
 		const speed = getValueById('mode-speed');
 		const data = new Uint8Array([0xbb, md, speed, 0x44]);
-		// const data = new Uint8Array([0xbb, md, 0x05, 0x44]);
-		console.log(data);
 		bulbChar.writeValue(data);
 	};
 	
