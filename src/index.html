@@ -18,7 +18,7 @@
 			<button id="btn--disconnect" class="btn btn--disconnect" disabled>Disonnect</button>
 		</p>
 
-		<form>
+		<form class="is-disabled">
 			<fieldset>
 				<legend>On/Off</legend>
 				<input type="checkbox" class="cb--toggle" id="on-off" checked><label for="on-off"></label>
@@ -43,7 +43,7 @@
 				<legend>White</legend>
 				<ul class="form-list">
 					<li class="form-row">
-						<label for="white">White</label><input type="range" id="white" value="100" min="0" max="255" data-white-slider><output id="white-output"></output>
+						<label for="white">Brightness</label><input type="range" id="white" value="100" min="0" max="255" data-white-slider><output id="white-output"></output>
 					</li>
 				</ul>
 			</fieldset>
@@ -56,7 +56,7 @@
 						<select id="mode"></select>
 					</li>
 					<li class="form-row">
-						<label for="mode-speed">Speed</label><input type="range" id="mode-speed" value="5" min="1" max="50"><output id="mode-speed-output"></output> sec
+						<label for="mode-speed">Speed</label><input type="range" id="mode-speed" value="1" min="0.1" step="0.1" max="10"><output id="mode-speed-output"></output> sec
 					</li>
 				</ul>
 			</fieldset>

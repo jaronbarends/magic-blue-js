@@ -29,6 +29,10 @@ h2 {
 	font-weight: bold;
 }
 
+ul {
+	padding: 0;
+}
+
 .o-content-width {
 	margin: 2em auto;
 	max-width: 40em;
@@ -56,8 +60,79 @@ h2 {
 	list-style: none;
 }
 
+.form-row {
+	padding: 0.5em 0;
+}
+
+form {
+	transition: opacity 200ms ease-in-out;
+}
+
+form.is-disabled {
+	opacity: 0.2;
+	pointer-events: none;
+}
+
+fieldset {
+	margin-bottom: 2em;
+	border: none;
+}
+
+legend {
+	font-weight: bold;
+}
+
 label {
 	display: inline-block;
 	width: 5em;
 	vertical-align: middle;
+}
+
+input {
+	vertical-align: middle;
+}
+
+.cb--toggle {
+	position: relative;
+	z-index: 1;
+	opacity: 0.00001;
+	width: 1px;
+	height: 1px;
+}
+
+.cb--toggle + label {
+	--pd: 4px;
+	--anim: 100ms ease-in-out;
+	--h: 1.5em;
+	--w: calc(1.8 * var(--h));
+	position: relative;
+	display: inline-block;
+	height: var(--h);
+	width: var(--w);
+	background: #c00;
+	border-radius: calc(0.5 * var(--h));
+	transition: background var(--anim);
+}
+
+
+.cb--toggle + label::after {
+	content: '';
+	display: block;
+	position: absolute;
+	top: 50%;
+	left: var(--pd);
+	width: calc(var(--h) - 2 * var(--pd));
+	height: calc(var(--h) - 2 * var(--pd));
+	border-radius: 50%;
+	background: white;
+	transform: translate(0, -50%);
+	transition: transform var(--anim);
+}
+
+.cb--toggle:checked + label {
+	background: green;
+}
+
+.cb--toggle:checked + label::after {
+	transform: translate(calc( var(--w) - 2 * var(--pd) - 100%), -50%);
 }
