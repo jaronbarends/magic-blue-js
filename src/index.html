@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="nl-nl">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	
+	<title>Magic Blue Bulb</title>
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	
+	<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+	<div class="o-content-width">
+		
+		<p>
+			<button id="btn--connect" class="btn btn--connect">Connect</button>
+			<button id="btn--disconnect" class="btn btn--disconnect" disabled>Disonnect</button>
+		</p>
+
+		<form>
+			<fieldset>
+				<legend>RGB values</legend>
+				<ul class="form-list">
+					<li class="form-row">
+						<label for="rgb-r">Red</label>
+						<input type="range" id="rgb-r" value="100" min="0" max="255" data-rgb-slider><output id="rgb-r-output"></output>
+					</li>
+					<li class="form-row">
+						<label for="rgb-g">Green</label><input type="range" id="rgb-g" value="100" min="0" max="255" data-rgb-slider><output id="rgb-g-output"></output>
+					</li>
+					<li class="form-row">
+						<label for="rgb-b">Blue</label><input type="range" id="rgb-b" value="100" min="0" max="255" data-rgb-slider><output id="rgb-b-output"></output>
+					</li>
+				</ul>
+			</fieldset>
+			
+			<fieldset>
+				<legend>White</legend>
+				<ul class="form-list">
+					<li class="form-row">
+						<label for="white">White</label><input type="range" id="white" value="100" min="0" max="255" data-white-slider><output id="white-output"></output>
+					</li>
+				</ul>
+			</fieldset>
+			
+			<fieldset>
+				<legend>Fancy modes</legend>
+				<ul class="form-list">
+					<li class="form-row">
+						<label for="mode">mode</label>
+						<select id="mode"></select>
+					</li>
+					<li class="form-row">
+						<label for="mode-speed">Speed</label><input type="range" id="mode-speed" value="5" min="1" max="50" data-rgb-slider><output id="mode-speed-output"></output> sec
+					</li>
+				</ul>
+			</fieldset>
+		</form>
+
+	</div><!-- /.o-content-width -->
+	<script src="js/main.js"></script>
+</body>
+</html>
