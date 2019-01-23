@@ -44,7 +44,7 @@ export class MagicBlue {
 	* @param {Uint8Array} value - value to write
 	* @returns {Promise}
 	*/
-	async writeValue(value) {
+	async _writeValue(value) {
 		return this.ctrlCharacteristic.writeValue(value);
 	};
 
@@ -54,7 +54,7 @@ export class MagicBlue {
 	* @returns {Promise}
 	*/
 	switchOn() {
-		return this.writeValue(new Uint8Array([0xcc, 0x23, 0x33]));
+		return this._writeValue(new Uint8Array([0xcc, 0x23, 0x33]));
 	};
 
 
@@ -63,7 +63,7 @@ export class MagicBlue {
 	* @returns {Promise}
 	*/
 	switchOff() {
-		return this.writeValue(new Uint8Array([0xcc, 0x24, 0x33]));
+		return this._writeValue(new Uint8Array([0xcc, 0x24, 0x33]));
 	};
 
 
@@ -76,7 +76,7 @@ export class MagicBlue {
 	*/
 	setRGB(r, g, b) {
 		const value = new Uint8Array([0x56, r, g, b, 0xbb, 0xf0, 0xaa]);
-		return this.writeValue(value);
+		return this._writeValue(value);
 	};
 
 
@@ -87,7 +87,7 @@ export class MagicBlue {
 	*/
 	setWhite(level) {
 		const value = new Uint8Array([0x56, 0x00, 0x00, 0x00, level, 0x0f, 0xaa]);
-		return this.writeValue(value);
+		return this._writeValue(value);
 	};
 
 
@@ -100,7 +100,7 @@ export class MagicBlue {
 	setMode(modeId, speed) {
 		const speedUnits = 1000 * speed / 200;// one speed unit is around 200 msec
 		const value = new Uint8Array([0xbb, modeId, speedUnits, 0x44]);
-		this.writeValue(value);
+		this._writeValue(value);
 	};
 	
 }
