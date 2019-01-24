@@ -8,13 +8,47 @@ const MagicBlue = (function() {
 
 	// export class MagicBlue {
 	 class MagicBlue {
-		constructor() {}
+		constructor() {
+			this._webBluetooth = new WebBluetooth();
+			this._ctrlCharacteristic = null;
+		}
 
 		/**
 		* connect with the bulb
 		* @returns {boolean}
 		*/
 		async connect() {
+			return this._webBluetooth.connect(SERVICE_UUID);
+		}
+
+
+		/**
+		* disconnect the bulb
+		* @returns {undefined}
+		*/
+		disconnect() {
+			this._webBluetooth.disconnect();
+		};
+
+
+		/**
+		* write a value to the control characteristic
+		* @param {Uint8Array} value - value to write
+		* @returns {Promise}
+		*/
+		async _writeValue(value) {
+			return this._webBluetooth.writeValue(CONTROL_CHARACTERISTIC_UUID, value);
+		};
+
+
+		//-----------------------------------------------------------------------
+
+
+		/**
+		* connect with the bulb
+		* @returns {boolean}
+		*/
+		async connect_old() {
 			try {
 				this.device = await navigator.bluetooth.requestDevice({
 					filters: [{
@@ -36,7 +70,7 @@ const MagicBlue = (function() {
 		* disconnect the bulb
 		* @returns {undefined}
 		*/
-		disconnect() {
+		disconnect_old() {
 			if (this.device.gatt.connected) {
 				this.device.gatt.disconnect();
 				this.ctrlCharacteristic = null;
@@ -49,9 +83,11 @@ const MagicBlue = (function() {
 		* @param {Uint8Array} value - value to write
 		* @returns {Promise}
 		*/
-		async _writeValue(value) {
+		async _writeValue_old(value) {
 			return this.ctrlCharacteristic.writeValue(value);
 		};
+
+
 
 
 		/**

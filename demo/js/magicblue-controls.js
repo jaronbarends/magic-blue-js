@@ -41,12 +41,12 @@
 	*/
 	const setConnectionStatus = function() {
 		if (isConnected) {
-			document.getElementById(`btn--connect`).setAttribute('disabled', 'disabled');
-			document.getElementById(`btn--disconnect`).removeAttribute('disabled');
+			// document.getElementById(`btn--connect`).setAttribute('disabled', 'disabled');
+			// document.getElementById(`btn--disconnect`).removeAttribute('disabled');
 			document.querySelector('form').classList.remove('is-disabled');
 		} else {
-			document.getElementById(`btn--connect`).removeAttribute('disabled');
-			document.getElementById(`btn--disconnect`).setAttribute('disabled', 'disabled');
+			// document.getElementById(`btn--connect`).removeAttribute('disabled');
+			// document.getElementById(`btn--disconnect`).setAttribute('disabled', 'disabled');
 			document.querySelector('form').classList.add('is-disabled');
 		}
 	};
